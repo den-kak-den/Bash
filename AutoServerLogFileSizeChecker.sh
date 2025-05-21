@@ -10,7 +10,7 @@ fi
 
 filesize=$(stat -c %s "$filename")
 
-if [ "$filesize" -gt $file_size_limit ]; then
+if [ "$filesize" -gt $file_size_limit ]; then #если размер логфайла больше лимита
 
         if [ -f "last_size.txt" ]; then
           last_file_size=$(<"last_size.txt") #если файл есть, сравнить значения
