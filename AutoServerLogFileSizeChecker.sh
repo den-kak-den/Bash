@@ -12,19 +12,19 @@ filesize=$(stat -c %s "$filename")
 
 if [ "$filesize" -gt $file_size_limit ]; then #если размер логфайла больше лимита
 
-        if [ -f "last_size.txt" ]; then
-          last_file_size=$(<"last_size.txt") #если файл есть, сравнить значения
-            if [ (($filesize - $last_file_size)) -ge 1073741824 ]; then
-                echo "$filesize" > "last_size.txt"  # если значение файлсайз больше л>
-                echo "Restart please" #стираем ласт сайз и перезаписываем в него файл>
+        if [ -f "last_size.txt" ]; then       #проверяем, проводилась ли ранее проверка и есть ли такой файл
+          last_file_size=$(<"last_size.txt")  #если файл есть, записать его размер в файл размера 
+            if [ (($filesize - $last_file_size)) -ge 1073741824 ]; then   # если значение файлсайз больше или равно заданному размеру
+                echo "$filesize" > "last_size.txt"  #стираем ласт сайз и перезаписываем в него файл
+                echo "Restart please"               # даем команду на рестарт сервера
             else
-                echo "$filesize" > "last_size.txt" #все равно записываем в файл после>
-                echo "OK"
+                echo "$filesize" > "last_size.txt" # если размера файла меньше контрольного размера, все равно записываем в файл последний размер файла
+                echo "OK"                           # но рестарт не нужен
             fi
         else
-            echo "$filesize" > "last_size.txt" #если файла нет, создать его и записат>
-            echo "Restart please"
+            echo "$filesize" > "last_size.txt" #если размер лога больше контрольного, но файла размера нет в директории (первая проверка), создать его и записать в него размер лога
+            echo "Restart please"               # даем команду на рестарт сервера       
         fi
 else
-  echo "OK"
+  echo "OK"                                    #  пока размер логфайла меньше контрольного, рестарты не нужны
 fi
